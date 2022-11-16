@@ -1,6 +1,6 @@
 package com.example.sobes.service;
 
-import com.example.sobes.util.Pair;
+import com.example.sobes.dto.CharInfo;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.annotation.RequestScope;
@@ -17,23 +17,24 @@ public class CurRequestStringInfo {
         this.applicationStringsInfo = applicationStringsInfo;
     }
 
-    public Map<Character, Pair<Integer, Integer>> parse(String str) {
-        Map<Character, Pair<Integer, Integer>> curStringStat = new HashMap<>();
+    public Map<Character, CharInfo> parse(String str) {
+        Map<Character, CharInfo> curStringStat = new HashMap<>();
         if (!StringUtils.hasLength(str)) return curStringStat;
         char prevChar = str.charAt(0);
-        curStringStat.put(prevChar, Pair.of(1, 1));
+        Integer reqCount = null;
+        curStringStat.put(prevChar, CharInfo.of(prevChar, reqCount, 1, 1));
         int commonCharsLength = 1;
         for (int i = 1, len = str.length(); i < len; i += 1) {
             char ch = str.charAt(i);
-            Pair<Integer, Integer> charInfo = Pair.of(0, 1);
+            CharInfo charInfo = CharInfo.of(ch, reqCount,0, 1);
             int charCounter = charInfo.getCharCounts();
             commonCharsLength = prevChar == ch ? commonCharsLength + 1 : 1;
-            Pair<Integer, Integer> updatedCharInfo = Pair.of(charCounter + 1, commonCharsLength);
+            CharInfo updatedCharInfo = CharInfo.of(ch, reqCount,charCounter + 1, commonCharsLength);
             if (curStringStat.containsKey(ch)) {
-                Pair<Integer, Integer> prevStat = curStringStat.get(ch);
+                CharInfo prevStat = curStringStat.get(ch);
                 int updateChCount = prevStat.getCharCounts() + updatedCharInfo.getCharCounts();
                 int updateChLen = Math.max(updatedCharInfo.getLength(), prevStat.getLength());
-                updatedCharInfo = Pair.of(updateChCount, updateChLen);
+                updatedCharInfo = CharInfo.of(ch, reqCount, updateChCount, updateChLen);
             }
             curStringStat.put(ch, updatedCharInfo);
             prevChar = ch;

@@ -1,12 +1,10 @@
 package com.example.sobes.controller;
 
-import com.example.sobes.util.Pair;
+import com.example.sobes.dto.CharInfo;
 import com.example.sobes.service.ApplicationStringsInfo;
 import com.example.sobes.service.CurRequestStringInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @Controller
 @ResponseBody
@@ -21,12 +19,12 @@ public class StringController {
     }
 
     @GetMapping
-    public Map<Character, Pair<Integer, Integer>> getCurStringStat(@RequestParam(defaultValue = "") String str) {
-        return stringInfo.parse(str);
+    public Iterable<CharInfo> getCurStringStat(@RequestParam(defaultValue = "") String str) {
+        return stringInfo.parse(str).values();
     }
 
     @GetMapping("/stat")
-    public Map<Character, Pair<Integer, Integer>> getFullStat() {
+    public Iterable<CharInfo.AverageInfo> getFullStat() {
         return applicationStringsInfo.getInfo();
     }
 

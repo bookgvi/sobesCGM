@@ -1,33 +1,35 @@
 package com.example.sobes.service;
 
-import com.example.sobes.util.Pair;
+import com.example.sobes.dto.CharInfo;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.ApplicationScope;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @ApplicationScope
 public class ApplicationStringsInfo {
-    private final Map<Character, Pair<Integer, Integer>> fullStat = Collections.synchronizedMap(new HashMap<>());
+    private final Map<Character, CharInfo> fullStat = Collections.synchronizedMap(new HashMap<>());
 
-    public Map<Character, Pair<Integer, Integer>> getInfo() {
-        return fullStat;
+    public Iterable<CharInfo.AverageInfo> getInfo() {
+        return fullStat.values().stream().map(CharInfo::getAverageInfo).collect(Collectors.toUnmodifiableList());
     }
 
-    public void updateInfo(Map<Character, Pair<Integer, Integer>> curStringStat)  {
-        for(Map.Entry<Character, Pair<Integer, Integer>> elt : curStringStat.entrySet()) {
+    public void updateInfo(Map<Character, CharInfo> curStringStat)  {
+        for(Map.Entry<Character, CharInfo> elt : curStringStat.entrySet()) {
             Character ch = elt.getKey();
-            Pair<Integer, Integer> prevStat;
+            CharInfo prevStat;
             if (fullStat.containsKey(ch)) {
                 prevStat = fullStat.get(ch);
-                int updateChCount = prevStat.getCharCounts() + elt.getValue().getCharCounts();
-                int updateChLen = Math.max(elt.getValue().getLength(), prevStat.getLength());
-                prevStat = Pair.of(updateChCount, updateChLen);
+                int requestCount = prevStat.getRequestCount() + 1;
+                int charCount = prevStat.getCharCounts() + elt.getValue().getCharCounts();
+                int charLen = elt.getValue().getLength() + prevStat.getLength();
+                prevStat = CharInfo.of(ch, requestCount, charCount, charLen);
             } else {
-                prevStat = elt.getValue();
+                prevStat = CharInfo.of(elt.getValue().getCh(), 1, elt.getValue().getCharCounts(), elt.getValue().getLength());
             }
             fullStat.put(ch, prevStat);
         }
