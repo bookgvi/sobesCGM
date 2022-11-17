@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component
-@ApplicationScope
+//@Component
+//@ApplicationScope
 public class ApplicationStringsInfo {
     private final Map<Character, CharInfo> fullStat = Collections.synchronizedMap(new HashMap<>());
 

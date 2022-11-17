@@ -8,8 +8,8 @@ import org.springframework.web.context.annotation.RequestScope;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
-@RequestScope
+//@Component
+//@RequestScope
 public class CurRequestStringInfo {
     private final ApplicationStringsInfo applicationStringsInfo;
 

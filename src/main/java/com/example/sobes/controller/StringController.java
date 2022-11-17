@@ -6,6 +6,8 @@ import com.example.sobes.service.CurRequestStringInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 @ResponseBody
 @RequestMapping("/string")
@@ -19,12 +21,12 @@ public class StringController {
     }
 
     @GetMapping
-    public Iterable<CharInfo> getCurStringStat(@RequestParam(defaultValue = "") String str) {
+    public Iterable<CharInfo> getCurStringStat(@RequestParam(defaultValue = "") String str, HttpServletRequest request) {
         return stringInfo.parse(str).values();
     }
 
     @GetMapping("/stat")
-    public Iterable<CharInfo.AverageInfo> getFullStat() {
+    public Iterable<CharInfo.AverageInfo> getFullStat(HttpServletRequest request) {
         return applicationStringsInfo.getInfo();
     }
 
